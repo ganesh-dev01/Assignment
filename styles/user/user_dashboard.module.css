@@ -33,6 +33,13 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
+.main_dashboard_light .sidebar{
+    background-color: #f0f0f0;
+}
+
+
+
+
 .main_dashboard_dark .sidebar.sidebar_open,
 .main_dashboard_light .sidebar.sidebar_open {
     left: 0;
@@ -56,6 +63,9 @@
     transition: all 0.3s ease;
 }
 
+.main_dashboard_light .sidebar .brand_area{
+    color: #1a1a1a;
+}
 
 
 .main_dashboard_dark .sidebar .brand_area .close_area,
@@ -127,10 +137,17 @@
     border-radius: 5px;
 }
 
+.main_dashboard_light .sidebar .menu_area .menu_item{
+    color: #1a1a1a;
+}
+.main_dashboard_dark
 .main_dashboard_dark .sidebar .menu_area .menu_item:hover,
 .main_dashboard_light .sidebar .menu_area .menu_item:hover {
     background-color: #333;
     transform: scale(1.05);
+}
+.main_dashboard_light .sidebar .menu_area .menu_item:hover{
+   color: #f0f0f0;
 }
 
 .main_dashboard_dark .sidebar .menu_area .menu_item .menu_icon,
@@ -150,7 +167,9 @@
     width: 100%;
 }
 
-
+.main_dashboard_dark .main_content{
+    background-color: #1a1a1a;
+}
 
 .menu_bar_icon {
     display: none;
@@ -207,6 +226,12 @@
         transform: translateX(0);
     }
 
+    .main_dashboard_light .sidebar{
+        background-color: #f0f0f0;
+    }
+
+
+
     .main_dashboard_dark .sidebar .brand_area .close_area,
     .main_dashboard_light .sidebar .brand_area .close_area {
         display: none;
@@ -245,7 +270,7 @@
     transition: color 0.3s ease-in-out;
 }
 
-.main_dark .toggle_btn {
+.main_dashboard_dark .toggle_btn {
     color: white;
 }
 

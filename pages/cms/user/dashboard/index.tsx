@@ -1,12 +1,15 @@
 import { useContext, useState } from 'react';
-import { IoMdHome } from "react-icons/io";
+import { IoCreateSharp } from "react-icons/io5";
 import { IoCloseOutline } from "react-icons/io5";
 import { FaBars } from "react-icons/fa6";
-import { CgProfile } from "react-icons/cg";
+import { IoIosBookmarks } from "react-icons/io";
 import ThemeContext from '@/Theme/Themestate';
-import styles from '@/styles/user/user_dashboard.module.css';
 import { FaMoon, FaStethoscope, FaSun } from 'react-icons/fa';
-
+import { SlCalender } from "react-icons/sl";
+import styles from '@/styles/user/user_dashboard.module.css';
+import CreateAppo from '../create';
+import BookedAppo from '../booked';
+import Calender from '../calender';
 
 const User_dashboard: React.FC = () => {
     const data_theme = useContext(ThemeContext);
@@ -15,11 +18,14 @@ const User_dashboard: React.FC = () => {
 
     const Menu_oparetor = () => {
         switch (menu) {
-            case "home":
-                // return <Home />;
-                return null;
+            case "1":
+                return <CreateAppo />
+            case "2":
+                return <BookedAppo />
+            case "3":
+                return <Calender />
             default:
-                return null;
+                return <Calender />
         }
     }
     const theme_data = useContext(ThemeContext);
@@ -61,18 +67,26 @@ const User_dashboard: React.FC = () => {
                 </div>
 
                 <div className={styles.menu_area}>
-                    <div className={styles.menu_item} onClick={() => { setMenu("home"); setSidebarOpen(false) }}>
+                    <div className={styles.menu_item} onClick={() => { setMenu("1"); setSidebarOpen(false) }}>
                         <div className={styles.menu_icon}>
-                            <IoMdHome />
+                            <IoCreateSharp />
                         </div>
-                        <p>Home</p>
+                        <p>Create appointment</p>
                     </div>
 
-                    <div className={styles.menu_item} onClick={() => { setMenu("profile"); setSidebarOpen(false) }}>
+                    <div className={styles.menu_item} onClick={() => { setMenu("2"); setSidebarOpen(false) }}>
                         <div className={styles.menu_icon}>
-                            <CgProfile />
+                            <IoIosBookmarks />
                         </div>
-                        <p>Profile</p>
+                        <p>Booked appointment</p>
+                    </div>
+
+
+                    <div className={styles.menu_item} onClick={() => { setMenu("3"); setSidebarOpen(false) }}>
+                        <div className={styles.menu_icon}>
+                            <SlCalender />
+                        </div>
+                        <p>Calender view</p>
                     </div>
 
                 </div>
