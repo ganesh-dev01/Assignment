@@ -2,12 +2,14 @@ import { useContext, useState } from 'react';
 import { FaFileMedical } from "react-icons/fa";
 import { IoCloseOutline } from "react-icons/io5";
 import { FaBars } from "react-icons/fa6";
+import { FaUser } from "react-icons/fa";
 import ThemeContext from '@/Theme/Themestate';
 import { FaMoon, FaStethoscope, FaSun } from 'react-icons/fa';
 import { SlCalender } from "react-icons/sl";
 import styles from '@/styles/doctor/dct_dashboard.module.css'
 import PatientAppo from '../PatientAppo.tsx';
 import Calender from '../Calender';
+import Doctor_Profile from '../Profile/index';
 
 
 const Doctor_dashboard: React.FC = () => {
@@ -20,6 +22,8 @@ const Doctor_dashboard: React.FC = () => {
                 return <PatientAppo />
             case "2":
                 return <Calender />
+            case "3":
+                return <Doctor_Profile />
             default:
                 return <PatientAppo />
         }
@@ -75,6 +79,13 @@ const Doctor_dashboard: React.FC = () => {
                             <SlCalender />
                         </div>
                         <p>Calender view</p>
+                    </div>
+
+                    <div className={styles.menu_item} onClick={() => { setMenu("3"); setSidebarOpen(false) }}>
+                        <div className={styles.menu_icon}>
+                            <FaUser />
+                        </div>
+                        <p>Profile</p>
                     </div>
 
                 </div>

@@ -3,6 +3,7 @@ import { IoCreateSharp } from "react-icons/io5";
 import { IoCloseOutline } from "react-icons/io5";
 import { FaBars } from "react-icons/fa6";
 import { IoIosBookmarks } from "react-icons/io";
+import { FaUser } from "react-icons/fa";
 import ThemeContext from '@/Theme/Themestate';
 import { FaMoon, FaStethoscope, FaSun } from 'react-icons/fa';
 import { SlCalender } from "react-icons/sl";
@@ -10,6 +11,7 @@ import styles from '@/styles/user/user_dashboard.module.css';
 import CreateAppo from '../create';
 import BookedAppo from '../booked';
 import Calender from '../calender';
+import Profile from '../profile';
 
 const User_dashboard: React.FC = () => {
     const data_theme = useContext(ThemeContext);
@@ -24,6 +26,8 @@ const User_dashboard: React.FC = () => {
                 return <BookedAppo />
             case "3":
                 return <Calender />
+            case "4":
+                return <Profile />
             default:
                 return <Calender />
         }
@@ -87,6 +91,13 @@ const User_dashboard: React.FC = () => {
                             <SlCalender />
                         </div>
                         <p>Calender view</p>
+                    </div>
+
+                    <div className={styles.menu_item} onClick={() => { setMenu("4"); setSidebarOpen(false) }}>
+                        <div className={styles.menu_icon}>
+                        <FaUser />
+                        </div>
+                        <p>Profile</p>
                     </div>
 
                 </div>
