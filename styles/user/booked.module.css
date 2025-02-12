@@ -1,11 +1,72 @@
-.main_dark,
-.main_light {
+
+.main_dark, .main_light {
   width: 100%;
   height: 100%;
-
-  border: 2px solid red;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
-.main_dark{
-    color:white;
+
+.heading {
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+
+.appointmentTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+
+.appointmentTable thead {
+  background-color: #007bff;
+  color: white;
+}
+
+.appointmentTable th, .appointmentTable td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+
+.appointmentTable tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+
+.main_light {
+  background-color: #ffffff;
+  color: #333;
+}
+
+
+.main_dark {
+  background-color: #1e1e1e;
+  color: #ddd;
+}
+
+
+.main_dark .appointmentTable {
+  background-color: #2a2a2a;
+  color: white;
+}
+
+.main_dark .appointmentTable thead {
+  background-color: #444;
+}
+
+.main_dark .appointmentTable tbody tr:nth-child(even) {
+  background-color: #333;
 }
