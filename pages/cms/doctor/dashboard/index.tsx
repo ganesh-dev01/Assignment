@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { FaFileMedical } from "react-icons/fa";
 import { IoCloseOutline } from "react-icons/io5";
 import { FaBars } from "react-icons/fa6";
@@ -10,11 +10,31 @@ import styles from '@/styles/doctor/dct_dashboard.module.css'
 import PatientAppo from '../PatientAppo.tsx';
 import Calender from '../Calender';
 import Doctor_Profile from '../Profile/index';
+import { useRouter } from 'next/router.js';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const Doctor_dashboard: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [menu, setMenu] = useState("");
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
+    const theme_data = useContext(ThemeContext);
+
+    useEffect(() => {
+        const doctorSession = localStorage.getItem("doctor_session");
+
+        if (!doctorSession) {
+            toast.error("Unauthorized! Redirecting to login...", { position: "top-center" });
+            setTimeout(() => {
+                router.push('/auth/doctor/signin');
+            }, 2000);
+        } else {
+            setLoading(false);
+        }
+    }, [router]);
+
 
     const Menu_oparetor = () => {
         switch (menu) {
@@ -28,11 +48,12 @@ const Doctor_dashboard: React.FC = () => {
                 return <PatientAppo />
         }
     }
-    const theme_data = useContext(ThemeContext);
 
     const changeTheme = () => {
         theme_data?.setTheme(theme_data?.theme === "light" ? "dark" : "light");
     };
+
+    if (loading) return <p>Loading...</p>;
 
     return (
         <div className={styles[`main_dashboard_${theme_data?.theme}`]}>

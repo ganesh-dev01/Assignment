@@ -5,16 +5,37 @@ import { useForm } from 'react-hook-form';
 import ThemeContext from '@/Theme/Themestate';
 import styles from '@/styles/user/signin.module.css';
 import { FaMoon, FaSun } from 'react-icons/fa';
+import { supabase } from '@/lib/supabaseClient';
 
 const Admin_Signin: React.FC = () => {
     const theme_data = useContext(ThemeContext);
     const router = useRouter();
 
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    const [loading, setLoading] = useState(false); 
 
-    const onSubmit = async (data: any) => {
-      console.log(data);
+    const { register, handleSubmit, formState: { errors } } = useForm<{ email: string; password: string }>();
+    const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+
+    const onSubmit = async (data: { email: string; password: string }) => {
+        setLoading(true);
+        setErrorMsg("");
+
+        const { data: admin, error } = await supabase
+            .from("adminSignup")
+            .select("*")
+            .eq("username", data.email)
+            .eq("password", data.password)
+            .single();
+
+        if (error || !admin) {
+            setErrorMsg("Invalid email or password.");
+            setLoading(false);
+            return;
+        }
+
+        // Save admin session & redirect
+        localStorage.setItem("admin_session", JSON.stringify(admin));
+        router.push("/cms/admin/dashboard");
     };
 
     const changeTheme = () => {
@@ -45,14 +66,15 @@ const Admin_Signin: React.FC = () => {
                         fullWidth
                         className={styles.input_field}
                         id={styles[`input_field_${theme_data?.theme}`]}
-                        {...register('email', {
-                            required: 'Email is required.',
+                        {...register("email", {
+                            required: "Email is required.",
                             pattern: {
                                 value: /^\S+@\S+\.\S+$/,
-                                message: 'Enter a valid email address.',
+                                message: "Enter a valid email address.",
                             },
                         })}
                         error={!!errors.email}
+                        helperText={errors.email?.message as string}
                     />
 
                     <TextField
@@ -61,15 +83,18 @@ const Admin_Signin: React.FC = () => {
                         fullWidth
                         className={styles.input_field}
                         id={styles[`input_field_${theme_data?.theme}`]}
-                        {...register('password', {
-                            required: 'Password is required.',
+                        {...register("password", {
+                            required: "Password is required.",
                             minLength: {
                                 value: 6,
-                                message: 'Password must be at least 6 characters.',
+                                message: "Password must be at least 6 characters.",
                             },
                         })}
                         error={!!errors.password}
+                        helperText={errors.password?.message as string}
                     />
+
+                    {errorMsg && <p className={styles.error_text}>{errorMsg}</p>}
 
                     <Box className={styles.signin_btn_container}>
                         <Button
@@ -77,16 +102,16 @@ const Admin_Signin: React.FC = () => {
                             variant="contained"
                             color="primary"
                             className={styles.signin_btn}
-                            disabled={loading} 
+                            disabled={loading}
                         >
                             {loading ? "Loading..." : "Sign In"}
                         </Button>
                     </Box>
                 </Box>
-
             </div>
         </div>
     );
+
 };
 
 export default Admin_Signin;
