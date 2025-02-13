@@ -13,7 +13,8 @@
 ## 🔑 Features
 ### **For Patients:**
 ✅ **User Authentication** – Secure login and signup with Supabase Auth.  
-✅ **Book Appointments** – Select a doctor and schedule an appointment.  
+✅ **Book Appointments** – Select a doctor and schedule an appointment. 
+✅ **Patient Calendar** – Display scheduled appointments in a calendar view.   
 ✅ **View Canceled Appointments** – Check declined or rescheduled appointments.  
 ✅ **Responsive UI** – Works smoothly on both desktop and mobile.  
 
@@ -26,7 +27,9 @@
 ### **Admin Panel:**
 ✅ **Hidden Admin Portal** – Accessible only via a special URL.  
 ✅ **Admin Login URL:** `/auth/admin/signin/154154541`  
-✅ **Manage Doctors & Patients** – Admins can oversee the entire system.  
+✅ **Admin Login user name:** admin@example.com
+✅ **Admin Login password:** 123456
+✅ **Add and Manage Doctors:** – Admins can oversee the entire system.  
 
 ## 🛠️ Setup & Installation
 ### 1️⃣ **Clone the Repository**
