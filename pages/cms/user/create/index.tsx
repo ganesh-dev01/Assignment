@@ -38,7 +38,7 @@ const CreateAppo: React.FC = () => {
     fetchUser();
   }, []);
 
-  // Handle Form Submission
+
   const onSubmit = async (data: any) => {
     if (!userEmail) {
       toast.error("User not logged in. Please log in to book an appointment.");
@@ -55,7 +55,7 @@ const CreateAppo: React.FC = () => {
         appo_date: data.date,
         appo_time: data.time,
         doctorname: data.doctor,
-        booked_by: userEmail, // Store the logged-in user's email
+        booked_by: userEmail,
       },
     ]);
 
@@ -63,7 +63,7 @@ const CreateAppo: React.FC = () => {
       toast.error(`Error booking appointment: ${error.message}`);
     } else {
       toast.success("Appointment booked successfully!");
-      reset(); // Reset form after successful booking
+      reset(); 
     }
   };
 

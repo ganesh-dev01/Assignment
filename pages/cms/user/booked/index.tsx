@@ -15,7 +15,7 @@ const BookedAppo: React.FC = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
 
-  // Get logged-in user email from Supabase session
+
   useEffect(() => {
     const fetchUser = async () => {
       const { data, error } = await supabase.auth.getSession();
@@ -28,7 +28,7 @@ const BookedAppo: React.FC = () => {
     fetchUser();
   }, []);
 
-  // Fetch Appointments for Logged-in User
+ 
   useEffect(() => {
     if (userEmail) {
       const fetchAppointments = async () => {
@@ -47,19 +47,19 @@ const BookedAppo: React.FC = () => {
     }
   }, [userEmail]);
 
-  // Handle Update Modal Open
+ 
   const handleUpdate = (appointment: any) => {
     setSelectedAppointment(appointment);
     setShowUpdateModal(true);
   };
 
-  // Handle Delete Modal Open
+
   const handleDelete = (appointment: any) => {
     setSelectedAppointment(appointment);
     setShowDeleteModal(true);
   };
 
-  // Update Appointment
+
   const updateAppointment = async () => {
     if (!selectedAppointment) return;
 
@@ -84,7 +84,7 @@ const BookedAppo: React.FC = () => {
     }
   };
 
-  // Delete Appointment
+
   const deleteAppointment = async () => {
     if (!selectedAppointment) return;
 

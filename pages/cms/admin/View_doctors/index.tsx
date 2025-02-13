@@ -9,7 +9,7 @@ const View_doctor: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
 
-    // Fetch doctors from Supabase
+
     useEffect(() => {
         const fetchDoctors = async () => {
             const { data, error } = await supabase.from("doctorSignup").select("*");
@@ -22,19 +22,18 @@ const View_doctor: React.FC = () => {
         fetchDoctors();
     }, []);
 
-    // Open delete confirmation modal
+
     const handleOpenModal = (id: string) => {
         setDeleteId(id);
         setIsModalOpen(true);
     };
 
-    // Close modal
+
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setDeleteId(null);
     };
 
-    // Delete doctor from Supabase
     const handleConfirmDelete = async () => {
         if (deleteId) {
             const { error } = await supabase.from("doctorSignup").delete().match({ id: deleteId });

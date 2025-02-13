@@ -43,26 +43,25 @@ const Profile: React.FC = () => {
     }
   };
 
-  //  Sign Out function
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    router.push('/auth/user/signin'); // Redirect after sign out
+    router.push('/auth/user/signin'); 
   };
 
   return (
     <div className={`${styles.main_dashboard} ${styles[`main_${theme_data?.theme}`]}`}>
 
-      {/* Cover Image */}
+    
       <div className={styles.profile_header}>
         <Image src={cover_img} alt="Cover" layout="fill" objectFit="cover" />
       </div>
 
-      {/* Profile Picture */}
+    
       <div className={styles.profile_pic}>
         <img src={guest_img.src} alt="Profile Picture" className={styles.profile_pic_img} />
       </div>
 
-      {/* Profile Body */}
       <div className={styles.profile_body}>
         <div className={styles.profile_info_container}>
           <div className={styles.profile_item}>
@@ -79,7 +78,7 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        {/* Sign Out Button */}
+     
         <div className={styles.btn_container}>
           <button className={styles.signout_btn} onClick={() => setShowModal(true)}>
             <RiLogoutBoxRLine className={styles.logout_icon} /> Sign Out

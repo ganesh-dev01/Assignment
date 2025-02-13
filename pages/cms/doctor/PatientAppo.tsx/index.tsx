@@ -1,39 +1,103 @@
-import { useContext, useState } from 'react';
-import ThemeContext from '@/Theme/Themestate';
-import styles from '@/styles/doctor/patientappo.module.css';
+import { useContext, useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import ThemeContext from "@/Theme/Themestate";
+import styles from "@/styles/doctor/patientappo.module.css";
 
 const PatientAppo: React.FC = () => {
   const theme_data = useContext(ThemeContext);
 
-  // State for modals
+  // State for appointments
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [doctorName, setDoctorName] = useState<string | null>(null);
+
+  // Modal states
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeclineModal, setShowDeclineModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
+  const [postponeDate, setPostponeDate] = useState("");
+  const [reason, setReason] = useState("");
 
-  // Additional state for decline modal
-  const [postponeDate, setPostponeDate] = useState('');
-  const [reason, setReason] = useState('');
 
-  const appointments = [
-    { id: 1, doctor: "Arjun saha", date: "2025-02-15", time: "10:30 AM", purpose: "General Checkup" },
-    { id: 2, doctor: "Priya roy", date: "2025-02-16", time: "02:00 PM", purpose: "Dental Consultation" },
-    { id: 3, doctor: "Aniket roy", date: "2025-02-18", time: "04:45 PM", purpose: "Eye Examination" },
-  ];
+  useEffect(() => {
+    const storedDoctor = localStorage.getItem("doctor_session");
+    if (storedDoctor) {
+      const doctorData = JSON.parse(storedDoctor);
+      setDoctorName(doctorData.doctorname);
+    }
+  }, []);
 
-  const handleAccept = (appointment: any) => {
-    setSelectedAppointment(appointment);
-    setShowUpdateModal(true);
+
+  useEffect(() => {
+    if (doctorName) {
+      const fetchAppointments = async () => {
+        const { data, error } = await supabase
+          .from("appointment")
+          .select("*")
+          .eq("doctorname", doctorName);
+
+        if (error) {
+          console.error("Error fetching appointments", error);
+        } else {
+          setAppointments(data);
+        }
+      };
+      fetchAppointments();
+    }
+  }, [doctorName]);
+
+
+  const handleConfirmDone = async () => {
+    if (selectedAppointment) {
+      const { error } = await supabase
+        .from("appointment")
+        .delete()
+        .eq("id", selectedAppointment.id);
+
+      if (error) {
+        console.error("Error deleting appointment", error);
+      } else {
+        setAppointments((prev) => prev.filter((app) => app.id !== selectedAppointment.id));
+        setShowUpdateModal(false);
+      }
+    }
   };
 
-  const handleDecline = (appointment: any) => {
-    setSelectedAppointment(appointment);
-    setShowDeclineModal(true);
-  };
+ 
+  const handleSendDecline = async () => {
+    if (selectedAppointment && doctorName) {
+   
+      const { error: insertError } = await supabase.from("status").insert([
+        {
+          doctorname: doctorName,
+          ptemail: selectedAppointment.ptemail,
+          postpone_date: postponeDate,
+          reason: reason,
+          booked_person: selectedAppointment.booked_by,
+        },
+      ]);
 
-  const handleSendDecline = () => {
-    console.log("Postpone Date:", postponeDate);
-    console.log("Reason:", reason);
-    setShowDeclineModal(false);
+      if (insertError) {
+        console.error("Error inserting decline status", insertError);
+        return;
+      }
+
+  
+      const { error: deleteError } = await supabase
+        .from("appointment")
+        .delete()
+        .eq("id", selectedAppointment.id);
+
+      if (deleteError) {
+        console.error("Error deleting appointment", deleteError);
+      } else {
+        setAppointments((prev) =>
+          prev.filter((app) => app.id !== selectedAppointment.id)
+        );
+        setShowDeclineModal(false);
+        setPostponeDate("");
+        setReason("");
+      }
+    }
   };
 
   return (
@@ -53,13 +117,13 @@ const PatientAppo: React.FC = () => {
           <tbody>
             {appointments.map((appointment) => (
               <tr key={appointment.id}>
-                <td>{appointment.doctor}</td>
-                <td>{appointment.date}</td>
-                <td>{appointment.time}</td>
-                <td>{appointment.purpose}</td>
+                <td>{appointment.ptname}</td>
+                <td>{appointment.appo_date}</td>
+                <td>{appointment.appo_time}</td>
+                <td>{appointment.ptpurpose}</td>
                 <td>
-                  <button className={styles.acceptbtn} onClick={() => handleAccept(appointment)}>Accept</button>
-                  <button className={styles.declinebtn} onClick={() => handleDecline(appointment)}>Decline</button>
+                  <button className={styles.acceptbtn} onClick={() => { setSelectedAppointment(appointment); setShowUpdateModal(true); }}>Done</button>
+                  <button className={styles.declinebtn} onClick={() => { setSelectedAppointment(appointment); setShowDeclineModal(true); }}>Decline</button>
                 </td>
               </tr>
             ))}
@@ -72,9 +136,9 @@ const PatientAppo: React.FC = () => {
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
             <h4>Confirm Appointment</h4>
-            <p>Are you sure you want to accept the appointment with <b>{selectedAppointment.doctor}</b>?</p>
+            <p>Are you sure this patient has visited you?</p>
             <div className={styles.modalActions}>
-              <button className={styles.confirmbtn}>Confirm</button>
+              <button className={styles.confirmbtn} onClick={handleConfirmDone}>Confirm</button>
               <button className={styles.closeButton} onClick={() => setShowUpdateModal(false)}>Cancel</button>
             </div>
           </div>

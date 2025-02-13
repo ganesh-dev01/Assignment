@@ -13,7 +13,7 @@ const Doctor_Profile: React.FC = () => {
   const theme_data = useContext(ThemeContext);
   const router = useRouter();
 
-  // Fetch Doctor Data from Local Storage (or API)
+ 
   useEffect(() => {
     const doctorSession = localStorage.getItem("doctor_session");
 
@@ -35,17 +35,17 @@ const Doctor_Profile: React.FC = () => {
   return (
     <div className={`${styles.main_dashboard} ${styles[`main_${theme_data?.theme}`]}`}>
 
-      {/* Cover Image */}
+     
       <div className={styles.profile_header}>
         <Image src={cover_img} alt="Cover" layout="fill" objectFit="cover" />
       </div>
 
-      {/* Profile Picture */}
+     
       <div className={styles.profile_pic}>
         <img src={guest_img.src} alt="Profile Picture" className={styles.profile_pic_img} />
       </div>
 
-      {/* Profile Body */}
+  
       <div className={styles.profile_body}>
         <div className={styles.profile_info_container}>
           <div className={styles.profile_item}>
@@ -62,7 +62,7 @@ const Doctor_Profile: React.FC = () => {
           </div>
         </div>
 
-        {/* Sign Out Button */}
+     
         <div className={styles.btn_container}>
           <button className={styles.signout_btn} onClick={() => setShowModal(true)}>
             <RiLogoutBoxRLine className={styles.logout_icon} /> Sign Out

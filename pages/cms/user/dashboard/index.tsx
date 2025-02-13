@@ -11,6 +11,8 @@ import CreateAppo from '../create';
 import BookedAppo from '../booked';
 import Calender from '../calender';
 import Profile from '../profile';
+import Status from '../status';
+import { GrStatusWarningSmall } from 'react-icons/gr';
 
 const User_dashboard: React.FC = () => {
     const router = useRouter();
@@ -18,7 +20,6 @@ const User_dashboard: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [menu, setMenu] = useState("");
 
-    // 🔒 Check authentication status
     useEffect(() => {
         const checkAuth = async () => {
             const { data } = await supabase.auth.getSession();
@@ -38,6 +39,8 @@ const User_dashboard: React.FC = () => {
             case "3":
                 return <Calender />
             case "4":
+                return <Status />
+            case "5":
                 return <Profile />
             default:
                 return <Calender />
@@ -100,10 +103,18 @@ const User_dashboard: React.FC = () => {
 
                     <div className={styles.menu_item} onClick={() => { setMenu("4"); setSidebarOpen(false) }}>
                         <div className={styles.menu_icon}>
+                            <GrStatusWarningSmall />
+                        </div>
+                        <p>Status</p>
+                    </div>
+
+                    <div className={styles.menu_item} onClick={() => { setMenu("5"); setSidebarOpen(false) }}>
+                        <div className={styles.menu_icon}>
                             <FaUser />
                         </div>
                         <p>Profile</p>
                     </div>
+
                 </div>
             </div>
 

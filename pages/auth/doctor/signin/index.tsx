@@ -31,13 +31,13 @@ const Doctor_Signin: React.FC = () => {
             return;
         }
 
-        // ✅ Save session to localStorage
+
         localStorage.setItem("doctor_session", JSON.stringify(doctor));
 
         toast.success("Login Successful!", { position: "top-center" });
 
         setTimeout(() => {
-            router.push('/cms/doctor/dashboard'); // Redirect to dashboard
+            router.push('/cms/doctor/dashboard'); 
         }, 1500);
     };
 
@@ -47,7 +47,7 @@ const Doctor_Signin: React.FC = () => {
 
     return (
         <div className={styles[`main_${theme_data?.theme}`]}>
-            {/* Toast Notifications */}
+         
             <ToastContainer autoClose={1500} />
 
             <div className={styles.themebtn_area}>

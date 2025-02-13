@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabaseClient";
 import styles from "@/styles/user/calender.module.css";
 import ThemeContext from "@/Theme/Themestate";
 
-// Function to format time properly for FullCalendar
+
 const formatTime = (date: string, time: string) => {
   const [hours, minutes] = time.split(/[: ]/);
   const isPM = time.includes("PM");
@@ -15,7 +15,7 @@ const formatTime = (date: string, time: string) => {
   return `${date}T${formattedHours.toString().padStart(2, "0")}:${minutes}:00`;
 };
 
-// Appointment Data (Initially Empty, Will Be Populated Dynamically)
+
 let appointmentData: { doctor: string; date: string; time: string; purpose: string }[] = [];
 
 const AppointmentsCalendar = () => {
@@ -23,7 +23,7 @@ const AppointmentsCalendar = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
-  // Get logged-in user email from Supabase session
+
   useEffect(() => {
     const fetchUser = async () => {
       const { data, error } = await supabase.auth.getSession();
@@ -36,7 +36,7 @@ const AppointmentsCalendar = () => {
     fetchUser();
   }, []);
 
-  // Fetch Appointments from Supabase for Logged-in User
+  
   useEffect(() => {
     if (userEmail) {
       const fetchAppointments = async () => {
@@ -48,7 +48,7 @@ const AppointmentsCalendar = () => {
         if (error) {
           console.error("Error fetching appointments", error);
         } else {
-          // Populate appointmentData dynamically
+
           appointmentData = data.map((apt: any) => ({
             doctor: apt.doctorname,
             date: apt.appo_date,
@@ -56,7 +56,6 @@ const AppointmentsCalendar = () => {
             purpose: apt.ptpurpose,
           }));
 
-          // Convert appointmentData to FullCalendar events
           const formattedEvents = appointmentData.map((apt) => ({
             title: `${apt.doctor} - ${apt.purpose}`,
             start: formatTime(apt.date, apt.time),
