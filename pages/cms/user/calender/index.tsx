@@ -1,18 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { Modal, Box, TextField, Button, MenuItem } from "@mui/material";
-import styles from '@/styles/user/calender.module.css'
+import { supabase } from "@/lib/supabaseClient";
+import styles from "@/styles/user/calender.module.css";
 import ThemeContext from "@/Theme/Themestate";
-
-// Sample Appointment Data
-const appointmentData = [
-  { doctor: "Dr. Arjun Mehta", date: "2025-02-15", time: "10:30 AM", purpose: "General Checkup" },
-  { doctor: "Dr. Priya Sharma", date: "2025-02-16", time: "02:00 PM", purpose: "Dental Consultation" },
-  { doctor: "Dr. Rahul Verma", date: "2025-02-18", time: "04:45 PM", purpose: "Eye Examination" }
-];
 
 // Function to format time properly for FullCalendar
 const formatTime = (date: string, time: string) => {
@@ -22,35 +15,77 @@ const formatTime = (date: string, time: string) => {
   return `${date}T${formattedHours.toString().padStart(2, "0")}:${minutes}:00`;
 };
 
+// Appointment Data (Initially Empty, Will Be Populated Dynamically)
+let appointmentData: { doctor: string; date: string; time: string; purpose: string }[] = [];
+
 const AppointmentsCalendar = () => {
-  // Convert appointment data to FullCalendar events
-  const [events, setEvents] = useState(
-    appointmentData.map((apt) => ({
-      title: `${apt.doctor} - ${apt.purpose}`,
-      start: formatTime(apt.date, apt.time),
-      color: apt.purpose.includes("Dental") ? "#f4b400" : apt.purpose.includes("Eye") ? "#4285f4" : "#34a853"
-    }))
-  );
   const theme_data = useContext(ThemeContext);
+  const [events, setEvents] = useState<any[]>([]);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  // Get logged-in user email from Supabase session
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error("Error fetching user session", error);
+      } else {
+        setUserEmail(data.session?.user.email || null);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  // Fetch Appointments from Supabase for Logged-in User
+  useEffect(() => {
+    if (userEmail) {
+      const fetchAppointments = async () => {
+        const { data, error } = await supabase
+          .from("appointment")
+          .select("*")
+          .eq("booked_by", userEmail);
+
+        if (error) {
+          console.error("Error fetching appointments", error);
+        } else {
+          // Populate appointmentData dynamically
+          appointmentData = data.map((apt: any) => ({
+            doctor: apt.doctorname,
+            date: apt.appo_date,
+            time: apt.appo_time,
+            purpose: apt.ptpurpose,
+          }));
+
+          // Convert appointmentData to FullCalendar events
+          const formattedEvents = appointmentData.map((apt) => ({
+            title: `${apt.doctor} - ${apt.purpose}`,
+            start: formatTime(apt.date, apt.time),
+            color: apt.purpose.includes("Dental") ? "#f4b400" : apt.purpose.includes("Eye") ? "#4285f4" : "#34a853",
+          }));
+
+          setEvents(formattedEvents);
+        }
+      };
+      fetchAppointments();
+    }
+  }, [userEmail]);
+
   return (
     <div className={styles[`main_${theme_data?.theme}`]}>
-
-    <div className={styles.container}>
-      <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView="timeGridWeek"
-        headerToolbar={{
-          left: "prev,next today",
-          center: "title",
-          right: "dayGridMonth,timeGridWeek,timeGridDay"
-        }}
-        events={events}
-        editable={true}
-      />
+      <div className={styles.container}>
+        <FullCalendar
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          initialView="timeGridWeek"
+          headerToolbar={{
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay",
+          }}
+          events={events}
+          editable={true}
+        />
+      </div>
     </div>
-    
-    </div>
-   
   );
 };
 
