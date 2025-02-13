@@ -37,7 +37,7 @@ const Doctor_Signin: React.FC = () => {
         toast.success("Login Successful!", { position: "top-center" });
 
         setTimeout(() => {
-            router.push('/cms/doctor/dashboard'); 
+            router.push('/cms/doctor/dashboard');
         }, 1500);
     };
 
@@ -47,7 +47,7 @@ const Doctor_Signin: React.FC = () => {
 
     return (
         <div className={styles[`main_${theme_data?.theme}`]}>
-         
+
             <ToastContainer autoClose={1500} />
 
             <div className={styles.themebtn_area}>
@@ -66,7 +66,14 @@ const Doctor_Signin: React.FC = () => {
                         label="Email"
                         fullWidth
                         className={styles.input_field}
-                        {...register('email', { required: 'Email is required.' })}
+                        id={styles[`input_field_${theme_data?.theme}`]}
+                        {...register('email', {
+                            required: 'Email is required.',
+                            pattern: {
+                                value: /^\S+@\S+\.\S+$/,
+                                message: 'Enter a valid email address.',
+                            },
+                        })}
                         error={!!errors.email}
                     />
 
@@ -75,7 +82,14 @@ const Doctor_Signin: React.FC = () => {
                         type="password"
                         fullWidth
                         className={styles.input_field}
-                        {...register('password', { required: 'Password is required.' })}
+                        id={styles[`input_field_${theme_data?.theme}`]}
+                        {...register('password', {
+                            required: 'Password is required.',
+                            minLength: {
+                                value: 6,
+                                message: 'Password must be at least 6 characters.',
+                            },
+                        })}
                         error={!!errors.password}
                     />
 
