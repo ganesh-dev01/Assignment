@@ -5,16 +5,35 @@ import { useForm } from 'react-hook-form';
 import ThemeContext from '@/Theme/Themestate';
 import styles from '@/styles/user/signin.module.css';
 import { FaMoon, FaSun } from 'react-icons/fa';
+import { supabase } from '@/lib/supabaseClient'; 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const User_Signin: React.FC = () => {
     const theme_data = useContext(ThemeContext);
     const router = useRouter();
 
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const [loading, setLoading] = useState(false); 
+    const [loading, setLoading] = useState(false);
 
     const onSubmit = async (data: any) => {
-      console.log(data);
+        setLoading(true);
+        const { email, password } = data;
+
+        try {
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                toast.error(error.message);
+            } else {
+                toast.success("Signed in successfully!");
+                setTimeout(() => router.push('/cms/user/dashboard'), 2000); 
+            }
+        } catch (err) {
+            toast.error("Something went wrong. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const changeTheme = () => {
@@ -77,7 +96,7 @@ const User_Signin: React.FC = () => {
                             variant="contained"
                             color="primary"
                             className={styles.signin_btn}
-                            disabled={loading} 
+                            disabled={loading}
                         >
                             {loading ? "Loading..." : "Sign In"}
                         </Button>
@@ -94,6 +113,7 @@ const User_Signin: React.FC = () => {
                     </span>
                 </Typography>
             </div>
+            <ToastContainer position="top-center" autoClose={3000} />
         </div>
     );
 };

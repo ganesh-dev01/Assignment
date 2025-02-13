@@ -1,10 +1,12 @@
 import { useContext, useState, useRef, ChangeEvent, FormEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
-import styles from '@/styles/user/signup.module.css'
+import styles from '@/styles/user/signup.module.css';
 import ThemeContext from '@/Theme/Themestate';
 import { FaMoon, FaSun } from 'react-icons/fa';
-
+import { supabase } from '@/lib/supabaseClient';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface FormData {
     name: string;
@@ -16,18 +18,71 @@ interface FormData {
 
 const User_Signup: React.FC = () => {
     const theme_data = useContext(ThemeContext);
-
-
     const router = useRouter();
-
-    const fileInputRef = useRef<HTMLInputElement>(null);
     const [loading, setLoading] = useState(false);
-
 
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
 
     const onSubmit = async (data: FormData) => {
-        console.log(data);
+        setLoading(true);
+        const { name, email, phone, password, confirmPassword } = data;
+
+        if (password !== confirmPassword) {
+            toast.error('Passwords do not match');
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const { data: existingUsers, error: fetchError } = await supabase
+                .from('userSignup')
+                .select('email')
+                .eq('email', email);
+
+            if (fetchError) {
+                toast.error(fetchError.message);
+                setLoading(false);
+                return;
+            }
+
+            if (existingUsers && existingUsers.length > 0) {
+                toast.error('Email already exists. Please use a different email.');
+                setLoading(false);
+                return;
+            }
+
+            const { error: authError } = await supabase.auth.signUp({
+                email,
+                password,
+            });
+
+            if (authError) {
+                toast.error(authError.message);
+                setLoading(false);
+                return;
+            }
+
+            const { error: insertError } = await supabase
+                .from('userSignup')
+                .insert([{ name, email, phone, password }]);
+
+            if (insertError) {
+                toast.error(insertError.message);
+                setLoading(false);
+                return;
+            }
+
+            toast.success("Check your email for verification");
+            setTimeout(() => {
+                setLoading(false);
+                router.push('/auth/user/signin');
+            }, 2000);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                toast.error('An error occurred: ' + error.message);
+            }
+            setLoading(false);
+        }
     };
 
     const changeTheme = () => {
@@ -36,19 +91,14 @@ const User_Signup: React.FC = () => {
 
     return (
         <div className={styles[`main_${theme_data?.theme}`]}>
-
-            {/* Light/Dark Mode Toggle Button */}
             <div className={styles.themebtn_area}>
                 <button className={styles.toggle_btn} onClick={changeTheme}>
                     {theme_data?.theme === "light" ? <FaMoon /> : <FaSun />}
                 </button>
             </div>
-
             <div className={styles[`container_${theme_data?.theme}`]}>
                 <h4 className={styles.heading}>Sign Up</h4>
-
                 <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-
                     <input
                         placeholder="Name"
                         className={styles.input_field}
@@ -56,7 +106,6 @@ const User_Signup: React.FC = () => {
                         {...register('name', { required: 'Name is required.' })}
                     />
                     {errors.name && <span>{errors.name.message}</span>}
-
                     <input
                         placeholder="Email"
                         className={styles.input_field}
@@ -70,7 +119,6 @@ const User_Signup: React.FC = () => {
                         })}
                     />
                     {errors.email && <span>{errors.email.message}</span>}
-
                     <input
                         placeholder="Phone"
                         className={styles.input_field}
@@ -84,7 +132,6 @@ const User_Signup: React.FC = () => {
                         })}
                     />
                     {errors.phone && <span>{errors.phone.message}</span>}
-
                     <input
                         placeholder="Password"
                         type="password"
@@ -99,7 +146,6 @@ const User_Signup: React.FC = () => {
                         })}
                     />
                     {errors.password && <span>{errors.password.message}</span>}
-
                     <input
                         placeholder="Confirm Password"
                         type="password"
@@ -110,16 +156,11 @@ const User_Signup: React.FC = () => {
                         })}
                     />
                     {errors.confirmPassword && <span>{errors.confirmPassword.message}</span>}
-
                     <div className={styles.signup_btn_container}>
                         <button type="submit" className={styles.signup_btn}>
-                            {loading ? 'Loading...'
-                                :
-                                'Sign Up'
-                            }
+                            {loading ? 'Loading...' : 'Sign Up'}
                         </button>
                     </div>
-
                     <div className={styles.account_redirect}>
                         <p>Already have an account?
                             <span onClick={() => router.push('/auth/user/signin')}
@@ -130,6 +171,7 @@ const User_Signup: React.FC = () => {
                     </div>
                 </form>
             </div>
+            <ToastContainer position="top-center" autoClose={3000} />
         </div>
     );
 };
