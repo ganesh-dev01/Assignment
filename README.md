@@ -3,6 +3,26 @@
 ## 📌 Overview
 **MediSched** is a **Doctor Appointment Management System** built using **Next.js** and **Supabase**. It allows users to book, track, and manage doctor appointments efficiently. The system includes features for user authentication, appointment booking, doctor calendars, and status updates.
 
+## 🛠️ Setup & Installation
+### 1️⃣ **Clone the Repository**
+```bash
+git clone https://github.com/ganesh-dev01/Assignment.git
+cd Assignment
+```
+### 2️⃣ **Install Dependencies**
+```bash
+npm install
+# or
+yarn install
+```
+### 3️⃣ **Run the Project**
+```bash
+npm run dev
+# or
+yarn dev
+```
+The project will run on `http://localhost:3000`
+
 ## 🏗️ Tech Stack
 - **Frontend:** Next.js, React, MUI, React Hook Form, React Query, React Toastify
 - **Backend:** Supabase (PostgreSQL, Authentication, Database)
@@ -31,25 +51,6 @@
 ✅ **Admin Login password:** 123456
 ✅ **Add and Manage Doctors:** – Admins can oversee the entire system.  
 
-## 🛠️ Setup & Installation
-### 1️⃣ **Clone the Repository**
-```bash
-git clone https://github.com/ganesh-dev01/Assignment.git
-cd Assignment
-```
-### 2️⃣ **Install Dependencies**
-```bash
-npm install
-# or
-yarn install
-```
-### 3️⃣ **Run the Project**
-```bash
-npm run dev
-# or
-yarn dev
-```
-The project will run on `http://localhost:3000`
 
 ## 🔍 Key Files & Functions
 - `supabaseClient.ts` → Initializes and connects to Supabase.
